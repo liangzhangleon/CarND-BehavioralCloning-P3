@@ -1,5 +1,3 @@
----
-
 **Behavioral Cloning Project**
 **Liang Zhang**
 
@@ -13,7 +11,6 @@ The goals / steps of this project are the following:
 ## Rubric Points
  Here I will consider the [rubric points](https://review.udacity.com/#!/rubrics/432/view) individually and describe how I addressed each point in my implementation.  
 
----
 ### Files Submitted
 
 #### 1. My project includes the following files:
