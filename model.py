@@ -26,6 +26,7 @@ for line in lines:
   measurement = float(line[3])
   measurements.append(measurement)
 
+# Data augumentation
 augmented_images, augmented_measurements = [], []
 for image, measurement in zip(images, measurements):
   augmented_images.append(image)
@@ -41,8 +42,8 @@ from keras.layers import Flatten, Dense, Activation, Lambda, Cropping2D, Dropout
 from keras.layers.convolutional import Convolution2D
 
 model = Sequential()
-model.add(Lambda(lambda x: (x / 255.0) - 0.5 , input_shape = (160, 320, 3) ))
-model.add(Cropping2D(cropping=((70,25), (0,0))))
+model.add(Lambda(lambda x: (x / 255.0) - 0.5 , input_shape = (160, 320, 3) )) # Lambda layer and normalization
+model.add(Cropping2D(cropping=((70,25), (0,0))))                              # Cropping the images
 model.add(Convolution2D(24,5,5, subsample=(2,2), activation="relu"))
 model.add(Convolution2D(36,5,5, subsample=(2,2), activation="relu"))
 model.add(Convolution2D(48,5,5, subsample=(2,2), activation="relu"))	
@@ -51,7 +52,7 @@ model.add(Convolution2D(64,3,3, activation="relu"))
 model.add(Flatten())
 model.add(Dense(100))
 model.add(Dense(50))
-model.add(Dropout(0.5))
+model.add(Dropout(0.5))  # Dropout layer
 model.add(Dense(10))
 model.add(Dense(1))
 
