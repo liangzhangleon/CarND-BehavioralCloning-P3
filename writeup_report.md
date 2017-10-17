@@ -1,4 +1,5 @@
-**Behavioral Cloning Project**
+## Behavioral Cloning Project
+
 **Liang Zhang**
 
 The goals / steps of this project are the following:
@@ -34,7 +35,7 @@ The model.py file contains the code for training and saving the convolution neur
 
 #### 1. An appropriate model architecture has been employed
 
-My model is derived from the model of the autonomous vechicle team in Nvidia. 
+My model is derived from the model of the autonomous vehicle team in Nvidia. 
 
 The input data is normalized in the model using a Keras lambda layer (model.py line 45), which is followed by a cropping layer. 
 
@@ -44,13 +45,13 @@ Four fully connected layers are followed with a single output (model.py lines 53
 
 #### 2. Attempts to reduce overfitting in the model
 
-Afte the second fully connected layers, a dropout layer is included (model.py lines 55).
+After the second fully connected layers, a dropout layer is included (model.py lines 55).
 
 The model was trained and validated on different data sets by using data splitting (model.py line 59). The model was tested by running it through the simulator and ensuring that the vehicle could stay on the track.
 
 #### 3. Model parameter tuning
 
-The model used an adam optimizer, so the learning rate was not tuned manually (model.py line 59).
+The model used an Adam optimizer, so the learning rate was not tuned manually (model.py line 59).
 
 #### 4. Appropriate training data
 
@@ -60,36 +61,50 @@ Training data was chosen to keep the vehicle driving on the road. I only used th
 
 #### 1. Solution Design Approach
 
-The overall strategy for deriving a model architecture was to ...
+There were three important parts for me to derive the final model. 
 
-My first step was to use a convolution neural network model similar to the ... I thought this model might be appropriate because ...
+The first part is to collect the training data. I started with the given sample data, which recorded the center lane driving behavior. 
+Surprisingly this data set is enough for me to derive the final model, so this part was straightforward for me.
 
-In order to gauge how well the model was working, I split my image and steering angle data into a training and validation set. I found that my first model had a low mean squared error on the training set but a high mean squared error on the validation set. This implied that the model was overfitting. 
+The second part is choosing the preprocessing techniques. Firstly I  just used a simple neural network with a fully connected layer to obtained a model. I let the vehicle to drive autonomously on track one to see how the model behaves. The result was not good. Then I added a lambda normalization layer and augmented the data by flipping the images.  These two operations improved the model a bit but not so significantly. Lastly I used a cropping layer to reduce the image size and let the model focus on the important information. After the cropping layer, the car could drive to the bridge on track without problems with the proper EPOCH.  
 
-To combat the overfitting, I modified the model so that ...
+The third part is that I started to use a well-known deep neural network, which is the one given in the project guide from the Nvidia team. The DNN consists of five convolutional layers followed by four fully connected layers. After each convolutional layer, a Relu activation layer is included. This model worked very well till the second sharp turn on the track one. I modified this model by including a dropout layer after the second fully connected layer. I also used a EPOCH = 5 at the end. At the end of the process, the vehicle is able to drive autonomously around the track without leaving the road.
 
-Then I ... 
+Note that to efficiently train and validate the DNN, I setup a tensor-gpu enviroment by installing CUDA toolkit 8.0 and cuDNN 6.0.
 
-The final step was to run the simulator to see how well the car was driving around track one. There were a few spots where the vehicle fell off the track... to improve the driving behavior in these cases, I ....
-
-At the end of the process, the vehicle is able to drive autonomously around the track without leaving the road.
-
-####2. Final Model Architecture
+#### 2. Final Model Architecture
 
 The final model architecture (model.py lines 45-57) :
 
+Layer | Description
+------------ | -------------
+Input | 160x320x3 RGB image
+Convolution | 5x5 filter, 2x2 stride
+Relu |
+Convolution | 5x5 filter, 2x2 stride
+Relu |
+Convolution | 5x5 filter, 2x2 stride
+Relu |
+Convolution | 3x3 filter
+Relu |
+Convolution | 3x3 filter
+Relu |
+Flatten |
+Fully connected | output 100
+Fully connected | output 50
+Dropout | keep_prob = 0.5
+Fully connected | output 10
+Fully connected | logits, 1 output
 
-####3. Creation of the Training Set & Training Process
+#### 3. Creation of the Training Set & Training Process
 
 To capture good driving behavior, I first checked the sample data and found that the sample data shows good center driving behavior. Hence, I used this data set. Here is an example image of center lane driving:
 
-![alt text](center_2016_12_01_13_30_48_287.jpg)
+![On bridge](./examples/center_2016_12_01_13_30_48_287.jpg)
+![Sharp turn](./examples/center_2016_12_01_13_42_08_706.jpg)
 
-To augment the data sat, I also flipped images and angles thinking that this would help. For example, here is an image that has then been flipped:
+To augment the data set, I also flipped images and angles to balance the data set. 
 
-![alt text][image6]
-![alt text][image7]
+In the sample data, I had 8036 number of data points. I augmented the data set by flipping the image. I then preprocessed this data by normalization and cropping the images.
 
-In the sample data, I had 8036 number of data points. I augumented the data set by flipping the image. I then preprocessed this data by normalization and cropping the images.
-
-I finally randomly shuffled the data set and put 20% of the data into a validation set. The validation set helped determine if the model was over or under fitting. The number of epochs I used was 5 by checking the validation loss. I used an adam optimizer so that manually training the learning rate wasn't necessary.
+I finally randomly shuffled the data set and put 20% of the data into a validation set. The validation set helped determine if the model was over or under fitting. The number of epochs I used was 5 by checking the validation loss. I used an Adam optimizer so that manually training the learning rate wasn't necessary.
